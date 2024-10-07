@@ -38,8 +38,9 @@ async def handler(websocket):
         elif message['Type'] == 'STOP':
             # Opens file that get saved
             open('save.json', 'w').close()
-            # Writes to the save file
+            # Deletes old save data
             file = open('save.json', 'a')
+            # Writes to the save file
             file.write('{')
             for users in clients:
                 file.write('"' + users + '"' + ':')
