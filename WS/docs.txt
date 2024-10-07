@@ -1,0 +1,44 @@
+Small Documentation for the types of requests and the arguments that should come with them.
+All of these are in JSON
+
+ECHO:
+The server will send back what you send it
+{
+    "Type": "ECHO",
+    "Message": "TEST"
+}
+This will return TEST back to the caller
+
+LOGIN:
+Will attempt to log in a user via a username. If there is no record of user, a new client account will be made. (Passwords can be added if wanted)
+{
+    "Type": "LOGIN",
+    "Sender": "username1"
+}
+This will attempt to log in as the user "username1"
+
+SEND:
+Send a message from one user to another.
+{
+    "Type": "SEND",
+    "Sender": "username1",
+    "Recipient": "username2",
+    "Message": "TEST"
+}
+This will send a message from username1 to username2 with the message TEST
+
+GET:
+Get the conversation between two users.
+{
+    "Type": "GET",
+    "Sender": "username1",
+    "Recipient": "username2"
+}
+This get the chats between username1 and username2
+
+STOP:
+Stops the server, server will save before exiting
+{
+    "Type": "STOP"
+}
+This stops the server
