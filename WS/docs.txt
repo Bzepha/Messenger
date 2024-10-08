@@ -1,6 +1,17 @@
 Small Documentation for the types of requests and the arguments that should come with them.
 All of these are in JSON
 
+HOW TO USE:
+This section will define how to use the server I have programmed.
+
+First things first you want to esablish a connection. You do this by connecting to the websocket and sending the LOGIN command.
+This will create a new client account or access an old one that has been put in.
+
+Then you will want to get the message history of a chat. This is done via the GET command, it will return all the chat history of the user.
+
+After that you are good to start sending SEND commands to whoever you want to message. Messages are handled with usernames currently.
+
+
 ECHO:
 The server will send back what you send it
 {

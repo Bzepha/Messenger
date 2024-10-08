@@ -5,7 +5,7 @@
     <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
     <title>CExchange</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="./css/style.css" type="text/css">
 </head>
 <body>
 <div class="card">
@@ -23,7 +23,7 @@
 
     function init() {
         try {
-            socket = new WebSocket("ws://localhost:80");
+            socket = new WebSocket("ws://192.168.1.152:8080");
             socket.onopen = function () {
                 console.log("websocket opened");
                // socket.send('history');
@@ -37,8 +37,8 @@
                 newMessage.classList.add("incoming-message");
                 newMessage.textContent = event.data;
                 document.querySelector(".message-list").appendChild(newMessage);
-                let message_list = document.getElementById('message-list');
-                message_list.scrollTop = message_list.scrollHeight;
+                let messageList = document.querySelector(".message-list");
+                message_list.scrollTop = messageList.scrollHeight;
             };
             socket.onerror = function (event) {
                 console.log("websocket error: " + event);
@@ -49,19 +49,24 @@
     }
 
     function sendMessage() {
-        let message = document.getElementById("message");
-        if (message.value === '/clear'){
+        let message = document.getElementById("message").value;
+        
+        if (message.value === '/clear') {
             document.querySelector('.message-list').innerHTML = '';
-            socket.send(message.value);
-            message.value = '';
-        }
-        else{
-        socket.send(message.value);
+            socket.send(message);
+        } else {
+        socket.send(message);
+        console.log("Message sent: ", message);
+        
         let newMessage = document.createElement("li");
         newMessage.classList.add("outgoing-message");
-        newMessage.textContent = message.value;
+        newMessage.textContent = message;
         document.querySelector(".message-list").appendChild(newMessage);
-        message.value = '';
+
+        document.getElementById("message").value = '';
+
+        let messageList = document.querySelector(".message-list");
+        messageList.scrollTop = messageList.scrollHeight;
     }
     }
 

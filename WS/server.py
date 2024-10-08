@@ -9,6 +9,7 @@ clients = {}
 async def handler(websocket):
     async for message in websocket:
         # Loads message from a JSON format
+        print(message)
         message = json.loads(message)
         # Refer to ECHO in docs.txt
         if message['Type'] == 'ECHO':
@@ -18,16 +19,21 @@ async def handler(websocket):
         elif message['Type'] == 'SEND':
             # Grabs the recipient from the clients dictionary
             recipient = clients.get(message['Recipient'])
-            # Adds the message to the 'chats' section of the client
-            recipient.add_message(message['Sender'], message['Message'])
+            try:
+                await recipient[1].send(json.dumps({"Message": message['Message']}))
+            finally:
+                # Adds the message to the 'chats' section of the client
+                recipient[0].add_message(message['Sender'], message['Message'])
             # Next two lines does the same as the recipient but for the Sender.
             sender = clients.get(message['Sender'])
-            sender.add_self_message(message['Recipient'], message['Message'])
+            sender[0].add_self_message(message['Recipient'], message['Message'])
         # Reference in LOGIN of docs.txt
         elif message['Type'] == 'LOGIN':
             # Checks if client is already in 'clients'. If they aren't a new user is added
             if clients.get(message['Sender']) == None:
-                clients[message['Sender']] = client(message['Sender'], {})
+                clients[message['Sender']] = (client(message['Sender'], {}), websocket)
+            else:
+                clients[message['Sender']] = (message['Sender'], websocket)
             # Sends back a welcome in message.
             await websocket.send('Welcome in ' + message['Sender'])
         # Reference in GET of docs.txt
