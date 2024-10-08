@@ -33,13 +33,18 @@ async def handler(websocket):
             if clients.get(message['Sender']) == None:
                 clients[message['Sender']] = (client(message['Sender'], {}), websocket)
             else:
-                clients[message['Sender']] = (message['Sender'], websocket)
+                clients[message['Sender']] = (clients[message['Sender']], websocket)
             # Sends back a welcome in message.
             await websocket.send('Welcome in ' + message['Sender'])
         # Reference in GET of docs.txt
         elif message['Type'] ==  'GET':
             # Sends the websocket a users conversation with another
-            await websocket.send(clients.get(message['Sender']).get_chat_history(message['Recipient']))
+            history = clients.get(message['Sender'])
+            history = json.loads(history[0].get_chat_history(message['Recipient']))['Message']
+            if history == None:
+                continue
+            for messages in history:
+                await websocket.send(json.dumps({'Message': messages}))
         # Reference in STOP of docs.txt
         elif message['Type'] == 'STOP':
             # Opens file that get saved
@@ -50,7 +55,7 @@ async def handler(websocket):
             file.write('{')
             for users in clients:
                 file.write('"' + users + '"' + ':')
-                file.write(clients[users].save())
+                file.write(clients[users][0].save())
                 file.write(',')
             file.write('"SAVE": "DONE"}')
             # Closes the file
@@ -62,7 +67,7 @@ async def handler(websocket):
 
 async def main():
     # Starts the server on localhost on port 80
-    async with serve(handler, 'localhost', 80):
+    async with serve(handler, '192.168.1.213', 80):
         print('Starting')
         await asyncio.get_running_loop().create_future() # Runs Forever
 
@@ -79,3 +84,5 @@ def start():
                     clients[saves] = client(save[saves][saves], save[saves][saves]['MESSAGEHISTORY'])
         finally: 
             asyncio.run(main())
+
+start()

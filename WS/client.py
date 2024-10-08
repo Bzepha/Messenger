@@ -11,13 +11,13 @@ class client:
     def add_message(self, sender, message):
         if self.chats.get(sender) == None:
             self.chats[sender] = []
-        self.chats.get(sender).append((sender, message))
+        self.chats.get(sender).append(str(sender) + ': ' + str(message))
         return        
     
     def add_self_message(self, recipient, message):
         if self.chats.get(recipient) == None:
             self.chats[recipient] = []
-        self.chats.get(recipient).append((self.name, message))
+        self.chats.get(recipient).append(str(self.name) + ': ' + str(message))
         return   
 
     def save(self):

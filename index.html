@@ -23,7 +23,7 @@
 
     function init() {
         try {
-            socket = new WebSocket("ws://192.168.1.152:8080");
+            socket = new WebSocket("ws://localhost:80");
             socket.onopen = function () {
                 console.log("websocket opened");
                // socket.send('history');
